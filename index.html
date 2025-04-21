@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Résultats PO</title>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2rem;
+        }
+        h2 {
+            margin-top: 2rem;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 2rem;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 0.5rem;
+            text-align: left;
+        }
+        .loader {
+            font-size: 1.2rem;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>Résultats de l'équipe PO</h1>
+    <p class="loader" id="loading">Chargement des résultats...</p>
+    <div id="results"></div>
+
+    <script>
+        async function fetchAndDisplayExcel() {
+            const url = 'https://apogee-po.github.io/resultats-po/resultats-po.xlsx';
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("Fichier introuvable");
+
+                const arrayBuffer = await response.arrayBuffer();
+                const data = new Uint8Array(arrayBuffer);
+                const workbook = XLSX.read(data, { type: "array" });
+
+                document.getElementById('loading').style.display = 'none';
+
+                workbook.SheetNames.forEach(sheetName => {
+                    const html = XLSX.utils.sheet_to_html(workbook.Sheets[sheetName], { header: sheetName });
+                    const section = document.createElement('div');
+                    section.innerHTML = html;
+                    document.getElementById('results').appendChild(section);
+                });
+            } catch (error) {
+                document.getElementById('loading').textContent = "Erreur lors du chargement des résultats.";
+                console.error("Erreur : ", error);
+            }
+        }
+
+        fetchAndDisplayExcel();
+    </script>
+</body>
+</html>
