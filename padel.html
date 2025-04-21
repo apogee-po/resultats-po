@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Résultats - Padel</title>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 2rem;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <h1>Résultats - Padel</h1>
+  <a href="index.html">← Retour à l'accueil</a>
+  <div id="results"></div>
+
+  <script>
+    async function loadExcelSheet() {
+      const response = await fetch('resultats-po.xlsx');
+      const arrayBuffer = await response.arrayBuffer();
+      const workbook = XLSX.read(new Uint8Array(arrayBuffer), { type: 'array' });
+      const sheet = workbook.Sheets["Padel"];
+      const html = XLSX.utils.sheet_to_html(sheet, { header: "Padel" });
+      document.getElementById('results').innerHTML = html;
+    }
+
+    loadExcelSheet();
+  </script>
+</body>
+</html>
