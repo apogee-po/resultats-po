@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Résultats PO</title>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    h1, h2 { color: #2c3e50; }
+    table { border-collapse: collapse; margin: 20px 0; width: 100%; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    th { background-color: #f4f4f4; }
+    .success { color: green; }
+    .fail { color: red; }
+    .dropzone {
+      padding: 30px;
+      border: 2px dashed #aaa;
+      border-radius: 10px;
+      text-align: center;
+      color: #888;
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Résultats en direct - Équipe PO</h1>
+
+  <div class="dropzone" id="dropzone">
+    Glissez-déposez le fichier Excel ici (.xlsx)
+  </div>
+
+  <div id="results"></div>
+
+  <script>
+    const dropzone = document.getElementById("dropzone");
+    const resultsContainer = document.getElementById("results");
+
+    dropzone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropzone.style.borderColor = "#2c3e50";
+    });
+
+    dropzone.addEventListener("dragleave", () => {
+      dropzone.style.borderColor = "#aaa";
+    });
+
+    dropzone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropzone.style.borderColor = "#aaa";
+      const file = e.dataTransfer.files[0];
+      handleFile(file);
+    });
+
+    function handleFile(file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+        const matches = XLSX.utils.sheet_to_json(workbook.Sheets["Matchs"]);
+        const parcours = XLSX.utils.sheet_to_json(workbook.Sheets["Parcours"]);
+        displayResults(matches, parcours);
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function displayResults(matches, parcours) {
+      const sports = [...new Set(matches.map(m => m.Sport))];
+
+      resultsContainer.innerHTML = "";
+
+      // Résultats de matchs par sport
+      sports.forEach(sport => {
+        const sportMatches = matches.filter(m => m.Sport === sport);
+        const section = document.createElement("section");
+        section.innerHTML = `<h2>${sport}</h2>`;
+        const table = document.createElement("table");
+
+        table.innerHTML = `
+          <tr>
+            <th>Genre</th><th>Équipe</th><th>Adversaire</th>
+            <th>Score PO</th><th>Score Adverse</th><th>Date</th>
+          </tr>
+        `;
+
+        sportMatches.forEach(m => {
+          const row = document.createElement("tr");
+          const resultClass = parseInt(m.Score_PO) > parseInt(m.Score_ADV) ? "success" :
+                              parseInt(m.Score_PO) < parseInt(m.Score_ADV) ? "fail" : "";
+          row.innerHTML = `
+            <td>${m.Genre}</td>
+            <td>${m.Équipe}</td>
+            <td>${m.Adversaire}</td>
+            <td class="${resultClass}">${m.Score_PO}</td>
+            <td class="${resultClass}">${m.Score_ADV}</td>
+            <td>${m.Date}</td>
+          `;
+          table.appendChild(row);
+        });
+
+        section.appendChild(table);
+        resultsContainer.appendChild(section);
+      });
+
+      // Résultats du parcours du combattant
+      if (parcours.length > 0) {
+        const section = document.createElement("section");
+        section.innerHTML = `<h2>Parcours du Combattant</h2>`;
+        const table = document.createElement("table");
+        table.innerHTML = `
+          <tr><th>Participant</th><th>Chrono</th><th>Rang</th><th>Date</th></tr>
+        `;
+        parcours.forEach(p => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${p.Participant}</td>
+            <td>${p.Chrono}</td>
+            <td>${p.Rang}</td>
+            <td>${p.Date}</td>
+          `;
+          table.appendChild(row);
+        });
+        section.appendChild(table);
+        resultsContainer.appendChild(section);
+      }
+    }
+  </script>
+</body>
+</html>
