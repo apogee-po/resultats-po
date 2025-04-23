@@ -9,38 +9,41 @@
       background-color: #f4f6f8;
       margin: 0;
       padding: 0;
-      height: 100vh;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-    }
-
-    .container {
-      background-color: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      max-width: 600px;
-      width: 90%;
-      text-align: center;
     }
 
     header {
+      width: 100%;
+      background-color: #007bff;
+      color: white;
+      padding: 1rem 2rem;
+      text-align: center;
+      justify-content: center;
       display: flex;
       align-items: center;
-      justify-content: center;
-      margin-bottom: 2rem;
-      gap: 1rem;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
 
     header img {
       height: 200px;
+      margin-right: 0.5rem;
     }
 
     h1 {
       font-size: 2rem;
       margin: 0;
-      color: #007bff;
+    }
+
+    main {
+      margin-top: 2rem;
+      background-color: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      max-width: 600px;
+      width: 90%;
     }
 
     ul {
@@ -67,24 +70,22 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <img src="logo.png" alt="Logo de l'événement">
-      <h1>Résultats PO - Accueil</h1>
-    </header>
+  <header>
+    <img src="logo.png" alt="Logo de l'événement">
+    <h1>Résultats PO - Accueil</h1>
+  </header>
 
-    <main>
-      <ul>
-        <li><a href="basket.html">Basket</a></li>
-        <li><a href="foot.html">Foot</a></li>
-        <li><a href="handball.html">Handball</a></li>
-        <li><a href="volley.html">Volley</a></li>
-        <li><a href="badminton.html">Badminton</a></li>
-        <li><a href="rugby.html">Rugby</a></li>
-        <li><a href="padel.html">Padel</a></li>
-        <li><a href="parcours_du_combattant.html">Parcours du Combattant</a></li>
-      </ul>
-    </main>
-  </div>
+  <main>
+    <ul>
+      <li><a href="basket.html">Basket</a></li>
+      <li><a href="foot.html">Foot</a></li>
+      <li><a href="handball.html">Handball</a></li>
+      <li><a href="volley.html">Volley</a></li>
+      <li><a href="badminton.html">Badminton</a></li>
+      <li><a href="rugby.html">Rugby</a></li>
+      <li><a href="padel.html">Padel</a></li>
+      <li><a href="parcours_du_combattant.html">Parcours du Combattant</a></li>
+    </ul>
+  </main>
 </body>
 </html>
